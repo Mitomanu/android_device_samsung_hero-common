@@ -641,7 +641,6 @@ service prepare_param /system/bin/prepare_param.sh /dev/block/platform/155a0000.
     class core
     user root
     group root
-    seclabel u:r:prepare_param:s0
     oneshot
 
 # SENSOR FRAMEWORK : starts fingerprintService
@@ -677,7 +676,6 @@ service fingerprintd /system/bin/fingerprintd
 # umount service
 service umount_service /system/bin/umount -D /preload
     disabled
-    seclabel u:r:umount_service:s0
     oneshot
 
 # Support Preload install apks
@@ -709,9 +707,10 @@ on property:ro.bootmode=charger
 on property:ro.bootmode=charger
     class_start sec-charger
 
-service lpm /system/bin/lpm
+service battery_charger /sbin/healthd -c
     class sec-charger
     critical
+    seclabel u:r:healthd:s0
 
 # sem_daemon permission
     chown system system /efs/sec_efs/ssp_data
@@ -766,7 +765,6 @@ service fwup /sbin/ffu -a
     class firmware_update
     user root
     group root
-    seclabel u:r:ffu:s0
     critical
     oneshot
 
@@ -788,7 +786,6 @@ service swapon /sbin/sswap -s -f 2048
     class core
     user root
     group root
-    seclabel u:r:sswap:s0
     oneshot
 
 # redsocks
