@@ -47,7 +47,7 @@
     <!--
         RIL/Radio
       -->
-    <hal format="hidl">
+    <!--hal format="hidl">
         <name>android.hardware.radio</name>
         <transport>hwbinder</transport>
         <impl level="generic"></impl>
@@ -56,8 +56,8 @@
             <name>IRadio</name>
             <instance>slot1</instance>
         </interface>
-    </hal>
-    <hal format="hidl">
+    </hal-->
+    <!--hal format="hidl">
         <name>android.hardware.radio.deprecated</name>
         <transport>hwbinder</transport>
         <impl level="generic"></impl>
@@ -66,7 +66,7 @@
             <name>IOemHook</name>
             <instance>slot1</instance>
         </interface>
-    </hal>
+    </hal-->
 
     <!--
         WiFi
@@ -95,14 +95,14 @@
     <!--
         Location
       -->
-    <hal format="hidl">
+    <!--hal format="hidl">
         <name>android.hardware.gnss</name>
         <version>1.0</version>
         <interface>
             <name>IGnss</name>
             <instance>default</instance>
         </interface>
-    </hal>
+    </hal-->
 
     <!--
         Vibrator
@@ -114,6 +114,34 @@
         <version>1.0</version>
         <interface>
             <name>IVibrator</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!--
+        Sensors
+      -->
+   <hal format="hidl">
+		<name>android.hardware.sensors</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ISensors</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!--
+        OMX
+      -->
+    <hal format="hidl">
+        <name>android.hardware.media.omx</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IOmx</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IOmxStore</name>
             <instance>default</instance>
         </interface>
     </hal>

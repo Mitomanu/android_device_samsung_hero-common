@@ -1,11 +1,8 @@
 import init.samsungexynos8890.usb.rc
 import init.baseband.rc
-import init.rilcommon.rc
+import init.carrier.rc
 import init.wifi.rc
 import init.gps.rc
-import init.samsung.rc
-import init.rilcommon.rc
-# import init.power.rc
 
 on early-init
     mount debugfs /sys/kernel/debug /sys/kernel/debug
@@ -20,12 +17,6 @@ on init
 
     # Support legacy paths
     symlink /sdcard /mnt/sdcard
-    symlink /sdcard /storage/sdcard0
-    symlink /sdcard1 /storage/sdcard1
-    symlink /sdcard1 /mnt/extSdCard
-    symlink /sdcard1 /mnt/sdcard1
-    symlink /sdcard1 /external_sd
-    symlink /storage/usbdisk /mnt/usbdisk
 
     export EXTERNAL_STORAGE /sdcard
 
@@ -40,12 +31,7 @@ on init
 
 on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
-
     setprop vold.post_fs_data_done 1
-
-# sem_daemon permission
-    chown system system /efs/sec_efs/ssp_data
-    chmod 0644 /efs/sec_efs/ssp_data
 
 # Permissions for audio
     chown system radio /sys/class/audio/earjack/select_jack
@@ -53,7 +39,6 @@ on post-fs-data
     chown system radio /sys/class/audio/earjack/state
     chown system radio /sys/class/audio/earjack/mic_adc
     chown system radio /sys/class/audio/codec/check_codec_id
-    chown system audio /sys/class/dsm/max98505/dsm_log
     chown system audio /sys/class/dsm/max98506/dsm_log
     chown system audio /sys/class/dsm/maxdsm_cal/max
     chown system audio /sys/class/dsm/maxdsm_cal/min
@@ -86,7 +71,6 @@ on post-fs-data
     chown system radio /sys/class/camera/rear/fw_update
     chown system radio /sys/class/camera/rear/companion_ic_check
     chown system radio /sys/class/camera/flash/rear_flash
-    chown cameraserver system /sys/class/camera/flash/torch_flash
     chown cameraserver system /sys/class/camera/flash/rear_torch_flash
     chown system radio /sys/class/camera/front/front_camfw
     chown system radio /sys/class/camera/front/front_camfw_full
@@ -126,6 +110,9 @@ on post-fs-data
     chown system radio /sys/class/power_supply/battery/batt_self_discharging_control
     chown system radio /sys/class/power_supply/battery/batt_inbat_wireless_cs100
 
+# Permissions for PCIe
+    chown system system /sys/devices/15660000.pcie0/pcie_sysfs
+
 #Private Mode
     mkdir /mnt/shell/privatemode 0700 system system
     mkdir /storage/Private 0000 system system
@@ -149,6 +136,23 @@ on boot
     # Set up kernel tracing, but disable it by default
     chmod 0222 /sys/kernel/debug/tracing/trace_marker
     write /sys/kernel/debug/tracing/tracing_on 0
+
+    # Permissions for NAD
+    symlink /dev/block/platform/155a0000.ufs/by-name/NAD_REFER /dev/block/NAD_REFER
+    chown system radio /sys/class/sec/sec_nad/nad_stat
+    chmod 0664 /sys/class/sec/sec_nad/nad_stat
+    chown system radio /sys/class/sec/sec_nad/nad_erase
+    chmod 0664 /sys/class/sec/sec_nad/nad_erase
+    chown system radio /sys/class/sec/sec_nad/nad_acat
+    chmod 0664 /sys/class/sec/sec_nad/nad_acat
+    chown system radio /sys/class/sec/sec_nad/nad_dram
+    chmod 0664 /sys/class/sec/sec_nad/nad_dram
+    chown system radio /sys/class/sec/sec_nad/nad_all
+    chmod 0664 /sys/class/sec/sec_nad/nad_all
+    chown system radio /sys/class/sec/sec_nad/nad_support
+    chmod 0664 /sys/class/sec/sec_nad/nad_support
+    chown system radio /dev/block/NAD_REFER
+    chmod 0664 /dev/block/NAD_REFER
 
     # PMS DVFS
     chown system system /sys/power/cpuhotplug/enabled
@@ -330,16 +334,6 @@ on boot
 # MSP FactoryApp
 	mkdir /efs/FactoryApp 0775 system system
 
-# lcd a2-line
-    copy /system/vendor/firmware/a2_line.dat /efs/FactoryApp/a2_line.dat
-    chown system system /efs/FactoryApp/a2_line.dat
-    chmod 0640 /efs/FactoryApp/a2_line.dat
-
-
-# IPSec for VOLTE
-    chown root system /dev/socket
-    chmod 0775 /dev/socket
-
 on fs
     mount_all /fstab.samsungexynos8890
     setprop ro.crypto.fuse_sdcard true
@@ -386,10 +380,7 @@ on fs
     chown system system /sys/class/ion_cma/ion_video_ext/isolated
 
 # Permissions for backlight
-    chmod 0660 /sys/class/backlight/panel/brightness
     chown system system /sys/class/backlight/panel/brightness
-    chown system system /sys/class/backlight/panel/auto_brightness
-    chown system system /sys/class/backlight/panel/auto_brightness_level
     chown system system /sys/class/backlight/panel/weakness_ccb
 
 # Permissions for LCD HMT
@@ -406,23 +397,23 @@ on fs
     chown system system /sys/class/lcd/panel/siop_enable
     chown system system /sys/class/lcd/panel/temperature
     chown system radio /sys/class/lcd/panel/mcd_mode
-    chown system media_rw /sys/class/backlight/panel/weakness_hbm_comp
-    chown system system /sys/class/lcd/panel/ldu_correction
     chown system system /sys/class/lcd/panel/lux
     chown system media_rw /sys/class/lcd/panel/adaptive_control
     chown system media_rw /sys/class/lcd/panel/resolution
     chown system system /sys/class/lcd/panel/SVC_OCTA
+    chown system system /sys/class/lcd/panel/dpui
+    chown system system /sys/class/lcd/panel/dpui_dbg
 
 # Permissions for MDNIE
     chown system media_rw /sys/class/mdnie/mdnie/mode
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system system /sys/class/mdnie/mdnie/accessibility
-    chown system system /sys/class/mdnie/mdnie/auto_brightness
     chown system system /sys/class/mdnie/mdnie/sensorRGB
     chown system system /sys/class/mdnie/mdnie/mdnie_ldu
     chown system system /sys/class/mdnie/mdnie/hdr
     chown system system /sys/class/mdnie/mdnie/night_mode
     chown system system /sys/class/mdnie/mdnie/whiteRGB
+    chown system system /sys/class/mdnie/mdnie/color_lens
 
 # Permissions for System LSI NFC
 # NFC : Permissions for NFC
@@ -443,9 +434,6 @@ on fs
 # Permissions for S.LSI ESE
     chmod 0660 /dev/p3
     chown system system /dev/p3
-
-# NFC : create data/nfc for nv storage
-    mkdir /efs/sec_efs/nfc 0500 nfc nfc
 
 # Fingerprint
     mkdir /dev/validity 0770 system system
@@ -643,15 +631,53 @@ on fs
     chown system system /sys/class/rtc/rtc0/device/adc_reg_7
     chown system system /sys/class/rtc/rtc0/device/adc_ctrl1
 
-#~ # Copy DRM Key
-    #~ copy /system/app/wv.keys /factory/wv.keys
+# ARGOSD
+service argos-daemon /system/vendor/bin/argosd
+    class main
+    user system
+    group system radio
 
-#~ # Permission for DRM Key
-    #~ chmod 0644 /factory/wv.keys
+service prepare_param /system/bin/prepare_param.sh /dev/block/platform/155a0000.ufs/by-name/PARAM
+    class core
+    user root
+    group root
+    seclabel u:r:prepare_param:s0
+    oneshot
+
+# SENSOR FRAMEWORK : starts fingerprintService
+service vcsFPService /system/bin/vcsFPService
+    class late_start
+    user system
+    group system
+
+# FINGERPRINT FRAMEWORK : starts fingerprintd
+service fingerprintd /system/bin/fingerprintd
+    class late_start
+    user system
+    group system
+
+# Copy DRM Key
+    copy /system/app/wv.keys /factory/wv.keys
+
+# Permission for DRM Key
+    chmod 0644 /factory/wv.keys
+
+# MobiCore startup
+# service mobicore /system/bin/mcDriverDaemon -r /system/app/020a0000000000000000000000000000.drbin -r /system/app/mcRegistry/FFFFFFFFD00000000000000000000016.tlbin
+#     user drmrpc
+#     group drmrpc
+#     class core
+
+# RPMB
+#	service rpmbd /system/bin/rpmbd
+#	user root
+#	group drmrpc
+#	class main
 
 # umount service
 service umount_service /system/bin/umount -D /preload
     disabled
+    seclabel u:r:umount_service:s0
     oneshot
 
 # Support Preload install apks
@@ -672,21 +698,20 @@ on property:ro.debuggable=1
     write /sys/module/kgdboc/parameters/kgdboc ttyFIQ1
     write /sys/module/fiq_debugger/parameters/kgdb_enable 1
 
+# LPM
+on property:ro.bootmode=charger
+    mount ext4 /dev/block/platform/155a0000.ufs/by-name/SYSTEM /system wait ro
+
 on property:ro.bootmode=charger
     wait /dev/block/platform/155a0000.ufs/by-name/EFS
     mount ext4 /dev/block/platform/155a0000.ufs/by-name/EFS /efs nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
 
-on charger
-# Set cpu governor to powersave while in charging mode
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor powersave
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor powersave
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor powersave
+on property:ro.bootmode=charger
+    class_start sec-charger
 
-service battery_charger /sbin/healthd -c
-    class charger
+service lpm /system/bin/lpm
+    class sec-charger
     critical
-    seclabel u:r:healthd:s0
 
 # sem_daemon permission
     chown system system /efs/sec_efs/ssp_data
@@ -699,12 +724,51 @@ service sem_daemon /system/bin/sem_daemon
     group system nfc
     disabled
 
+# DRK/CS service
+service cs_service /system/bin/cs
+    class main
+    user system
+    group system
+    disabled
+
+on property:vold.decrypt=trigger_restart_framework
+     start cs_service
+
+on property:ro.crypto.default.encrypted=true
+    start cs_service
+
+on property:sys.mobicoredaemon.enable=true
+    start cs_service
+    write /proc/iccc_ready 1
+
 on property:sys.boot_completed=1
     setprop security.semdaemonfinish 0
     start sem_daemon
 
 on property:security.semdaemonfinish=1
     stop sem_daemon
+
+# Temporary disabled
+#SLocation
+#	service cellgeofenced /system/bin/cellgeofenced
+#	class main
+#	socket cellgeofence seqpacket 0660 gps system
+#	user gps
+#	group system inet
+
+# emergency firmware update
+on firmware
+    mount_all /fstab.samsungexynos8890.fwup
+    class_start firmware_update
+
+# Emergency Firmware Update
+service fwup /sbin/ffu -a
+    class firmware_update
+    user root
+    group root
+    seclabel u:r:ffu:s0
+    critical
+    oneshot
 
 # Secure Storage startup
 service secure_storage /system/bin/secure_storage_daemon
@@ -719,6 +783,14 @@ on property:ro.securestorage.support=true
     chown system system /dev/.secure_storage
     start secure_storage
 
+# SSWAP
+service swapon /sbin/sswap -s -f 2048
+    class core
+    user root
+    group root
+    seclabel u:r:sswap:s0
+    oneshot
+
 # redsocks
 service redsocks /system/bin/redsocks -c /data/mptcp/redsocks.conf
     class main
@@ -732,9 +804,37 @@ service sensorhubservice /system/bin/sensorhubservice
     user system
     group input
 
-service cameraserver /system/bin/cameraserver
+#SLocation
+	service cellgeofenced /system/bin/cellgeofenced
+	class main
+	socket cellgeofence seqpacket 0660 gps system
+	user gps
+	group system inet
+
+# ApexServer
+service apexserver /system/bin/apexserver
+	class main
+	user system
+	group system graphics media media_rw
+	disabled
+
+# RTC logging daemon (SEC_PM)
+service rtc_log /system/bin/rtc_log.sh
     class main
-    user cameraserver
-    group media_rw audio camera drmrpc inet shell sdcard_r system
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks
+    user system
+    group system
+    seclabel u:r:rtc_log:s0
+    oneshot
+
+# WSM service startup
+service wsmd /system/bin/wsmd
+    class core
+    user system
+    group system
+    disabled
+on property:ro.wsmd.enable=true
+    mkdir /dev/socket/wsm_socket 
+    chmod 0711 /dev/socket/wsm_socket
+    chown system system /dev/socket/wsm_socket
+    start wsmd
+

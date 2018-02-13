@@ -1,9 +1,9 @@
 DEVICE_PATH := device/samsung/hero-common
 
 # Configs
-PRODUCT_COPY_FILES += \
-	$(DEVICE_PATH)/configs/gps/gps.conf:system/etc/gps.conf \
-	$(DEVICE_PATH)/configs/gps/gps.xml:system/etc/gps.xml
+#PRODUCT_COPY_FILES += \
+#	$(DEVICE_PATH)/configs/gps/gps.conf:system/etc/gps.conf \
+#	$(DEVICE_PATH)/configs/gps/gps.xml:system/etc/gps.xml
 
 # Init Resources
 PRODUCT_PACKAGES += \
@@ -14,8 +14,8 @@ PRODUCT_PACKAGES += \
 
 # HIDL
 PRODUCT_PACKAGES += \
-	android.hardware.gnss@1.0-impl \
-	android.hardware.gnss@1.0-service
+	android.hardware.gnss@1.0-service \
+	android.hardware.gnss@1.0-impl
 
 # Permissions
 PRODUCT_COPY_FILES += \
