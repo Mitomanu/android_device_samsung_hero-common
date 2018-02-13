@@ -9,6 +9,3 @@ PRODUCT_COPY_FILES += \
 	$(DEVICE_PATH)/configs/media/somxreg.conf:system/etc/somxreg.conf 
 
 
- PRODUCT_PROPERTY_OVERRIDES += \
-	persist.media.treble_omx=false 
-
