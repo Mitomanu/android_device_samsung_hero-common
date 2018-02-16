@@ -28,3 +28,7 @@ type uart_device, dev_type;
 type vfs_device, dev_type;
 
 type batch_io_device, dev_type;
+
+allow hal_gnss_default vndbinder_device:chr_file { ioctl open read write };
+
+allow surfaceflinger ion_device:chr_file write;

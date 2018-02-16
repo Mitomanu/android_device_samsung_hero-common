@@ -24,7 +24,7 @@ allow init kmsg_device:chr_file write;
 
 allow init property_socket:sock_file write;
 
-allow init system_data_file:fifo_file write;
+allow init system_data_file:fifo_file { write lock };
 
 allow init camera_device:file { relabelto setattr };
 allow init camera_device:lnk_file { relabelto };
@@ -37,3 +37,14 @@ allow init su:process { transition rlimitinh siginh noatsecure };
 
 # RIL
 allow init socket_device:sock_file { create open read write getattr setattr };
+allow init rild:unix_stream_socket connectto;
+allow init self:netlink_kobject_uevent_socket { bind create setopt };
+
+allow init bbd_device:chr_file { getattr ioctl write };
+allow init node:tcp_socket node_bind;
+allow init port:tcp_socket name_bind;
+
+allow init self:netlink_kobject_uevent_socket { create setopt };
+allow init self:tcp_socket { bind create };
+
+allow init vndbinder_device:chr_file { ioctl open read write };
