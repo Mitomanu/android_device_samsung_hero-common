@@ -45,6 +45,22 @@ allow init node:tcp_socket node_bind;
 allow init port:tcp_socket name_bind;
 
 allow init self:netlink_kobject_uevent_socket { create setopt };
-allow init self:tcp_socket { bind create };
+allow init self:tcp_socket { bind create setopt };
 
 allow init vndbinder_device:chr_file { ioctl open read write };
+allow init hal_gnss_hwservice:hwservice_manager find;
+allow init hwservicemanager:binder { call transfer };
+allow init system_data_file:file lock;
+allow init storage_file:lnk_file read;
+
+
+allow init device:chr_file getattr;
+allow init fwmarkd_socket:sock_file write;
+allow init i2c_device:chr_file getattr;
+allow init media_rw_data_file:file append;
+allow init netd:unix_stream_socket connectto;
+allow init system_server:binder call;
+allow init uhid_device:chr_file getattr;
+allow init usbaccessory_device:chr_file getattr;
+allow init video_device:chr_file getattr;
+

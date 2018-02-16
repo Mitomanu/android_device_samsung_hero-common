@@ -28,3 +28,4 @@ allow system_server app_efs_file:dir search;
 allow system_server debugfs:dir { read open };
 allow system_server ion_device:chr_file write;
 
+allow system_server init:fifo_file write;
