@@ -386,7 +386,9 @@ typedef struct {
     /** Elevation of SV in degrees. */
     float   elevation;
     /** Azimuth of SV in degrees. */
-    float   azimuth;
+    float   azimuth;	
+    /** SAMSUNG **/
+    int used;
 } GpsSvInfo;
 
 typedef struct {
